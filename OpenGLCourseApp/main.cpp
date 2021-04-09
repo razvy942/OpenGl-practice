@@ -160,6 +160,7 @@ int main()
 		model = glm::scale(model, glm::vec3(0.5f, 0.5f, 0.5f));
 		sphere.SetModelMatrix(model, uniformModel);
 		sphere.RenderMesh();
+		// test
 	
 		
 		
