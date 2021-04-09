@@ -62,13 +62,14 @@ int main()
 	mainWindow = Window(800, 600);
 	mainWindow.Initialise();
 
+	
 	CreateObjects();
 	CreateShaders();
 
 	objectList = std::vector<ComplexObject*>();
 	utils = Utils();
 
-	camera = Camera(glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 1.0f, 0.0f), -90.0f, 0.0f, 2.0f, 0.2f);
+	camera = Camera(glm::vec3(0.0f, 0.0f, 1.5f), glm::vec3(0.0f, 1.0f, 0.0f), -90.0f, 0.0f, 2.0f, 0.2f);
 
 	brickTexture = Texture("Textures/brick.png");
 	brickTexture.LoadTexture(GL_RGBA);
@@ -77,7 +78,7 @@ int main()
 	blackMarbleTexture = Texture("Textures/FLoor/Marble_Black.jpg");
 	blackMarbleTexture.LoadTexture(GL_RGB);
 	
-	mainLight = Light(1.0f, 1.0f, 1.0f, 0.2f, 2.0f, -1.0f, -2.0f, 1.0f);
+	mainLight = Light(1.0f, 1.0f, 1.0f, 0.2f, 2.0f, -1.0f, 2.0f, 1.0f);
 
 	GLuint uniformProjection = 0, uniformModel = 0, uniformView = 0, uniformAmbientIntensity = 0, uniformAmbientColour = 0, uniformDiffuseIntensity = 0, uniformDirection = 0;
 	glm::mat4 projection = glm::perspective(glm::radians(45.0f), (GLfloat)mainWindow.getBufferWidth() / mainWindow.getBufferHeight(), 0.1f, 100.0f);
@@ -89,6 +90,8 @@ int main()
 	
 	IndependentMesh sphere;
 	utils.createSphere(&sphere);
+	IndependentMesh cylinder;
+	utils.createCylinder(&cylinder, 20, 0.1, 1);
 
 	// Loop until window closed
 	while (!mainWindow.getShouldClose())
@@ -147,7 +150,7 @@ int main()
 
 		// LETTERS
 		model = glm::mat4(1.0f);
-		model = glm::translate(model, glm::vec3(0.0f, 0.0f, -.5f));
+		model = glm::translate(model, glm::vec3(-0.4f, 0.0f, -.5f));
 		model = glm::scale(model, glm::vec3(0.1f, 0.1f, 0.1f));
 		
 		objectList[0]->SetModelMatrix(model, 4);
@@ -161,7 +164,14 @@ int main()
 		sphere.SetModelMatrix(model, uniformModel);
 		sphere.RenderMesh();
 		// test
-	
+		
+		model = glm::mat4(1.0f);
+		brickTexture.UseTexture();
+		model = glm::translate(model, glm::vec3(-1.0f, 0.0f, -.5f));
+		model = glm::scale(model, glm::vec3(0.5f, 0.5f, 0.5f));
+		model = glm::rotate(model, toRadians * 90, glm::vec3(1.0f, 0.0f, 0.0f));
+		cylinder.SetModelMatrix(model, uniformModel);
+		cylinder.RenderMesh();
 		
 		
 		glUseProgram(0);

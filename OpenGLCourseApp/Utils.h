@@ -17,7 +17,8 @@ public:
 	ComplexObject* CreateNumber4(GLuint uniformModel);
 
 	void createSphere(IndependentMesh* mesh);
-	void createCylinder(IndependentMesh* mesh);
+	std::vector<float> getUnitCircleVertices(int sectorCount);
+	void createCylinder(IndependentMesh* mesh, int sectorCount, float radius, float height);
 
 	void calcAverageNormals(unsigned int* indices, unsigned int indiceCount, float* vertices,
 		unsigned int vertexCount, unsigned int vLength, unsigned int normalOffset);

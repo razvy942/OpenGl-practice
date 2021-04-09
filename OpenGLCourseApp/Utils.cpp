@@ -147,13 +147,13 @@ void Utils::CreateLetters(unsigned int modelLocation, std::vector<ComplexObject*
 	ComplexObject* letterP = CreateLetterP(modelLocation);
 	// R translate
 	model = glm::mat4(1.0f);
-	model = glm::scale(model, glm::vec3(0.17f, 0.17f, 0.2f));
+	//model = glm::scale(model, glm::vec3(0.17f, 0.17f, 0.2f));
 	model = glm::translate(model, glm::vec3(0.0f, 0.0f, -2.0f));
 	model = glm::rotate(model, glm::radians(30.0f), glm::vec3(0.0f, 1.0f, 0.0f));
 	letterR->SetModelMatrix(model, modelLocation);
 	//// P translate
 	model = glm::mat4(1.0f);
-	model = glm::scale(model, glm::vec3(0.17f, 0.17f, 0.2f));
+	//model = glm::scale(model, glm::vec3(0.17f, 0.17f, 0.2f));
 	model = glm::translate(model, glm::vec3(5.0f, 0.0f, -2.0f));
 	model = glm::rotate(model, glm::radians(-10.0f), glm::vec3(0.0f, 1.0f, 0.0f));
 	letterP->SetModelMatrix(model, modelLocation);
@@ -166,69 +166,6 @@ void Utils::CreateLetters(unsigned int modelLocation, std::vector<ComplexObject*
 
 	objectList->push_back(razvanNameAndID);
 }
-
-//void Utils::createSphere(IndependentMesh* mesh)
-//{
-//	int i, j, indicator = 0, longs = 40, lats = 40;
-//
-//	std::vector<GLfloat> vertices;
-//	std::vector<GLuint> indices;
-//
-//	for (i = 0; i <= lats; i++) {
-//		double lat0 = glm::pi<double>() * (-0.5 + (double)(i - 1) / lats);
-//		double z0 = sin(lat0);
-//		double zr0 = cos(lat0);
-//
-//		double lat1 = glm::pi<double>() * (-0.5 + (double)i / lats);
-//		double z1 = sin(lat1);
-//		double zr1 = cos(lat1);
-//
-//		for (j = 0; j <= longs; j++) {
-//			double lng = 2 * glm::pi<double>() * (double)(j - 1) / longs;
-//			double x = cos(lng);
-//			double y = sin(lng);
-//
-//			vertices.push_back(x * zr0);
-//			vertices.push_back(y * zr0);
-//			vertices.push_back(z0);
-//
-//			// u, v tex coords
-//			vertices.push_back(0.0f);
-//			vertices.push_back(1.0f);
-//
-//			// normals 
-//			vertices.push_back(0.0f);
-//			vertices.push_back(0.0f);
-//			vertices.push_back(0.0f);
-//
-//			indices.push_back(indicator);
-//			indicator++;
-//
-//			vertices.push_back(x * zr1);
-//			vertices.push_back(y * zr1);
-//			vertices.push_back(z1);
-//
-//			// u, v tex coords
-//			vertices.push_back(0.0f);
-//			vertices.push_back(1.0f);
-//
-//			// normals 
-//			vertices.push_back(0.0f);
-//			vertices.push_back(0.0f);
-//			vertices.push_back(0.0f);
-//
-//			indices.push_back(indicator);
-//			indicator++;
-//
-//			
-//		}
-//	}
-//	calcAverageNormals(&indices[0], indices.size() - 2, &vertices[0], vertices.size() - 2 , 8, 5);
-//	/*Mesh* gridObj = new Mesh();
-//	gridObj->CreateMesh(&vertices[0], &indices[0], vertices.size(), indices.size());
-//	meshList.push_back(gridObj);*/
-//	mesh->CreateMesh(&vertices[0], &indices[0], vertices.size(), indices.size());
-//}
 
 void Utils::createSphere(IndependentMesh* mesh)
 {
@@ -305,52 +242,199 @@ void Utils::createSphere(IndependentMesh* mesh)
 		}
 	}
 
-	//calcAverageNormals(&indices[0], indices.size(), &vertices[0], vertices.size(), 5, 8);
+	// calcAverageNormals(&indices[0], indices.size(), &vertices[0], vertices.size(), 8, 5);
 	mesh->CreateMesh(&vertices[0], &indices[0], vertices.size(), indices.size());
 }
 
-void Utils::createCylinder(IndependentMesh* mesh)
+//void Utils::createCylinder(IndependentMesh* mesh)
+//{
+//	// Amount of points on the circle faces, more points results in a more circular looking cylinder
+//	int sides = 20;
+//	// refers to the top and bottom part of the cylinder, totaling 2
+//	int faces = 2;
+//	// Radius of the cylinder
+//	float radius = 1.0f;
+//	std::vector<float> vertices;
+//	std::vector<unsigned int> indices;
+//
+//	for (int i = 0; i <= 365; i += 360 / sides)		// <= to 365 because otherwise the last vertex that closes the circle would not be drawn
+//	{
+//		for (int j = 0; j < faces; j++)
+//		{
+//			float heading = toRadians(i);
+//			vertices.push_back((cos(heading) * radius) / sides);
+//			vertices.push_back((sin(heading) * radius) / sides);
+//			vertices.push_back(float(j) / float(faces));
+//		}
+//	}
+//
+//	// Refers to the current point on the circle (circle is made of multiple points 
+//	int currentPoint = 0;
+//	for (int i = 0; i < 360; i += 360 / sides)
+//	{
+//
+//		for (int j = 0; j < 360; j += 360 / sides)
+//		{
+//			indices.push_back(currentPoint);
+//			indices.push_back(currentPoint + 1);
+//			indices.push_back(currentPoint + 1 + sides);
+//			indices.push_back(currentPoint + sides);
+//			indices.push_back(currentPoint);
+//
+//			currentPoint += 1 % sides;
+//		}
+//	}
+//
+//	/*Mesh* gridObj = new Mesh();
+//	gridObj->CreateMesh(&vertices[0], &indices[0], vertices.size(), indices.size());
+//	meshList.push_back(gridObj);*/
+//	mesh->CreateMesh(&vertices[0], &indices[0], vertices.size(), indices.size());
+//}
+
+std::vector<float> Utils::getUnitCircleVertices(int sectorCount)
 {
-	// Amount of points on the circle faces, more points results in a more circular looking cylinder
-	int sides = 20;
-	// refers to the top and bottom part of the cylinder, totaling 2
-	int faces = 2;
-	// Radius of the cylinder
-	float radius = 1.0f;
+	const float PI = glm::pi<float>();
+	float sectorStep = 2 * PI / sectorCount;
+	float sectorAngle;  // radian
+
+	std::vector<float> unitCircleVertices;
+	for (int i = 0; i <= sectorCount; ++i)
+	{
+		sectorAngle = i * sectorStep;
+		unitCircleVertices.push_back(cos(sectorAngle)); // x
+		unitCircleVertices.push_back(sin(sectorAngle)); // y
+		unitCircleVertices.push_back(0);                // z
+	}
+	return unitCircleVertices;
+}
+
+void Utils::createCylinder(IndependentMesh* mesh, int sectorCount, float radius, float height)
+{
+	// clear memory of prev arrays
 	std::vector<float> vertices;
+	
+	// get unit circle vectors on XY-plane
+	std::vector<float> unitVertices = getUnitCircleVertices(sectorCount);
+
+	// put side vertices to arrays
+	for (int i = 0; i < 2; ++i)
+	{
+		float h = -height / 2.0f + i * height;           // z value; -h/2 to h/2
+		float t = 1.0f - i;                              // vertical tex coord; 1 to 0
+
+		for (int j = 0, k = 0; j <= sectorCount; ++j, k += 3)
+		{
+			float ux = unitVertices[k];
+			float uy = unitVertices[k + 1];
+			float uz = unitVertices[k + 2];
+			// position vector
+			vertices.push_back(ux * radius);             // vx
+			vertices.push_back(uy * radius);             // vy
+			vertices.push_back(h);                       // vz
+			
+			// texture coordinate
+			vertices.push_back((float)j / sectorCount); // s
+			vertices.push_back(t);                      // t
+			
+			// normal vector
+			vertices.push_back(ux);                       // nx
+			vertices.push_back(uy);                       // ny
+			vertices.push_back(uz);                       // nz
+		}
+	}
+
+	// the starting index for the base/top surface
+	//NOTE: it is used for generating indices later
+	int baseCenterIndex = (int)vertices.size() / 3;
+	int topCenterIndex = baseCenterIndex + sectorCount + 1; // include center vertex
+
+	// put base and top vertices to arrays
+	for (int i = 0; i < 2; ++i)
+	{
+		float h = -height / 2.0f + i * height;           // z value; -h/2 to h/2
+		float nz = -1 + i * 2;                           // z value of normal; -1 to 1
+
+		// center point
+		vertices.push_back(0);     vertices.push_back(0);     vertices.push_back(h);
+		vertices.push_back(0.5f); vertices.push_back(0.5f);
+		vertices.push_back(0);      vertices.push_back(0);      vertices.push_back(nz);
+
+		for (int j = 0, k = 0; j < sectorCount; ++j, k += 3)
+		{
+			float ux = unitVertices[k];
+			float uy = unitVertices[k + 1];
+			// position vector
+			vertices.push_back(ux * radius);             // vx
+			vertices.push_back(uy * radius);             // vy
+			vertices.push_back(h);                       // vz
+
+			// texture coordinate
+			vertices.push_back(-ux * 0.5f + 0.5f);      // s
+			vertices.push_back(-uy * 0.5f + 0.5f);      // t
+
+			// normal vector
+			vertices.push_back(0);                        // nx
+			vertices.push_back(0);                        // ny
+			vertices.push_back(nz);                       // nz
+		}
+	}
+
+	// generate CCW index list of cylinder triangles
 	std::vector<unsigned int> indices;
+	int k1 = 0;                         // 1st vertex index at base
+	int k2 = sectorCount + 1;           // 1st vertex index at top
 
-	for (int i = 0; i <= 365; i += 360 / sides)		// <= to 365 because otherwise the last vertex that closes the circle would not be drawn
+	// indices for the side surface
+	for (int i = 0; i < sectorCount; ++i, ++k1, ++k2)
 	{
-		for (int j = 0; j < faces; j++)
+		// 2 triangles per sector
+		// k1 => k1+1 => k2
+		indices.push_back(k1);
+		indices.push_back(k1 + 1);
+		indices.push_back(k2);
+
+		// k2 => k1+1 => k2+1
+		indices.push_back(k2);
+		indices.push_back(k1 + 1);
+		indices.push_back(k2 + 1);
+	}
+
+	// indices for the base surface
+	//NOTE: baseCenterIndex and topCenterIndices are pre-computed during vertex generation
+	//      please see the previous code snippet
+	for (int i = 0, k = baseCenterIndex + 1; i < sectorCount; ++i, ++k)
+	{
+		if (i < sectorCount - 1)
 		{
-			float heading = toRadians(i);
-			vertices.push_back((cos(heading) * radius) / sides);
-			vertices.push_back((sin(heading) * radius) / sides);
-			vertices.push_back(float(j) / float(faces));
+			indices.push_back(baseCenterIndex);
+			indices.push_back(k + 1);
+			indices.push_back(k);
+		}
+		else // last triangle
+		{
+			indices.push_back(baseCenterIndex);
+			indices.push_back(baseCenterIndex + 1);
+			indices.push_back(k);
 		}
 	}
 
-	// Refers to the current point on the circle (circle is made of multiple points 
-	int currentPoint = 0;
-	for (int i = 0; i < 360; i += 360 / sides)
+	// indices for the top surface
+	for (int i = 0, k = topCenterIndex + 1; i < sectorCount; ++i, ++k)
 	{
-
-		for (int j = 0; j < 360; j += 360 / sides)
+		if (i < sectorCount - 1)
 		{
-			indices.push_back(currentPoint);
-			indices.push_back(currentPoint + 1);
-			indices.push_back(currentPoint + 1 + sides);
-			indices.push_back(currentPoint + sides);
-			indices.push_back(currentPoint);
-
-			currentPoint += 1 % sides;
+			indices.push_back(topCenterIndex);
+			indices.push_back(k);
+			indices.push_back(k + 1);
+		}
+		else // last triangle
+		{
+			indices.push_back(topCenterIndex);
+			indices.push_back(k);
+			indices.push_back(topCenterIndex + 1);
 		}
 	}
 
-	/*Mesh* gridObj = new Mesh();
-	gridObj->CreateMesh(&vertices[0], &indices[0], vertices.size(), indices.size());
-	meshList.push_back(gridObj);*/
 	mesh->CreateMesh(&vertices[0], &indices[0], vertices.size(), indices.size());
 }
 
