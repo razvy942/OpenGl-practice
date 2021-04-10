@@ -23,6 +23,7 @@
 #include "Texture.h"
 #include "DirectionalLight.h"
 #include "PointLight.h"
+#include "SpotLight.h"
 #include "Utils.h"
 #include "Material.h"
 
@@ -52,6 +53,7 @@ Material dullMaterial;
 
 DirectionalLight mainLight;
 PointLight pointLights[MAX_POINT_LIGHTS];
+SpotLight spotLights[MAX_SPOT_LIGHTS];
 
 GLfloat deltaTime = 0.0f;
 GLfloat lastTime = 0.0f;
@@ -106,20 +108,36 @@ int main()
 	dullMaterial = Material(0.3f, 4.0f);
 	
 	mainLight = DirectionalLight(1.0f, 1.0f, 1.0f, 
-		0.2f, 0.3f, 
+		0.1f, 0.1f, 
 		2.0f, -1.0f, -2.0f);
 
 	unsigned int pointLightCount = 0;
 	pointLights[0] = PointLight(0.0f, 1.0f, 0.0f,
-		0.1f, 1.0f,
+		0.0f, 0.1f,
 		-4.0f, 0.0f, 0.0f,
 		0.3f, 0.2f, 0.1f);
 	pointLightCount++;
 	pointLights[1] = PointLight(0.0f, 0.0f, 0.5f,
-		0.1f, 1.0f,
+		0.0f, 1.1f,
 		4.0f, 0.0f, 0.0f,
 		0.3f, 0.2f, 0.1f);
 	pointLightCount++;
+
+	unsigned int spotLightCount = 0;
+	spotLights[0] = SpotLight(1.0f, 1.0f, 1.0f,
+		0.1f, 0.5f,
+		0.0f, 0.0f, 0.0f,
+		0.0f, -1.0f, 0.0f,
+		0.3f, 0.2f, 0.1f,
+		60.0f);
+	spotLightCount++;
+	spotLights[1] = SpotLight(1.0f, 1.0f, 1.0f,
+		1.0f, 1.0f,
+		0.0f, 0.5f, 0.0f,
+		-100.0f, -1.0f, 0.0f,
+		1.0f, 0.0f, 0.0f,
+		60.0f);
+	spotLightCount++;
 
 	GLuint uniformProjection = 0, uniformModel = 0, uniformView = 0, uniformEyePosition = 0,
 		uniformSpecularIntensity = 0, uniformShininess = 0;
@@ -170,7 +188,7 @@ int main()
 
 		shaderList[0].SetDirectionalLight(&mainLight);
 		shaderList[0].SetPointLight(pointLights, pointLightCount);
-		
+		shaderList[0].SetSpotLight(spotLights, spotLightCount);
 		//mainLight.useLight(uniformAmbientIntensity, uniformAmbientColour, uniformDiffuseIntensity, uniformDirection);
 
 		// renderObjects(uniformModel, uniformProjection, uniformView, projection);

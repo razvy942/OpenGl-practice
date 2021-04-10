@@ -2,7 +2,7 @@
 
 #include "Light.h"
 
-class PointLight : Light
+class PointLight : public Light
 {
 public:
 	PointLight();
@@ -17,7 +17,7 @@ public:
 
 	~PointLight();
 
-private:
+protected:
 	glm::vec3 position;
 
 	float constant, linear, exponent;
