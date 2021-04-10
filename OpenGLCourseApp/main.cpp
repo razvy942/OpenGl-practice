@@ -32,6 +32,9 @@ std::vector<ComplexObject*> objectList;
 std::vector<Shader> shaderList;
 
 Camera camera;
+Camera camera2;
+Camera camera3;
+Camera camera4;
 Utils utils;
 
 Texture brickTexture;
@@ -77,6 +80,9 @@ int main()
 	utils = Utils(&shaderList[0]);
 
 	camera = Camera(glm::vec3(0.0f, 0.0f, 1.5f), glm::vec3(0.0f, 1.0f, 0.0f), -90.0f, 0.0f, 2.0f, 0.2f);
+	camera2 = Camera(glm::vec3(0.0f, 0.0f, 1.5f), glm::vec3(0.0f, 1.0f, 0.0f), -90.0f, 0.0f, 2.0f, 0.2f);
+	camera3 = Camera(glm::vec3(0.0f, 0.0f, 5.5f), glm::vec3(0.0f, 1.0f, 0.0f), -90.0f, 0.0f, 2.0f, 0.2f);
+	camera4 = Camera(glm::vec3(0.0f, 4.0f, 5.5f), glm::vec3(0.0f, 1.0f, 0.0f), -90.0f, 0.0f, 2.0f, 0.2f);
 
 	brickTexture = Texture("Textures/brick.png");
 	brickTexture.LoadTexture(GL_RGBA);
@@ -110,7 +116,7 @@ int main()
 	utils.createCylinder(&cylinder, 20, 0.1, 1);
 	meshList.push_back(&cylinder);
 	glEnable(GL_NORMALIZE);
-	
+	float currentAngle = 0.0f;
 	// Loop until window closed
 	while (!mainWindow.getShouldClose())
 	{
@@ -120,6 +126,28 @@ int main()
 
 		// Get + Handle User Input
 		glfwPollEvents();
+
+		if (mainWindow.getsKeys()[GLFW_KEY_1])
+		{
+			camera = camera2;
+		}
+		if (mainWindow.getsKeys()[GLFW_KEY_2])
+		{
+			camera = camera3;
+		}
+		if (mainWindow.getsKeys()[GLFW_KEY_3])
+		{
+			camera = camera4;
+		}
+		if (mainWindow.getsKeys()[GLFW_KEY_LEFT])
+		{
+			currentAngle--;
+		}
+		if (mainWindow.getsKeys()[GLFW_KEY_RIGHT])
+		{
+			currentAngle++;
+		}
+		
 
 		camera.keyControl(mainWindow.getsKeys(), deltaTime);
 		camera.mouseControl(mainWindow.getXChange(), mainWindow.getYChange());
@@ -140,11 +168,14 @@ int main()
 		uniformSpecularIntensity = shaderList[0].GetSpecularIntensityLocation();
 		uniformShininess = shaderList[0].GetShininessLocation();
 
+		
 		mainLight.useLight(uniformAmbientIntensity, uniformAmbientColour, uniformDiffuseIntensity, uniformDirection);
 
 		// renderObjects(uniformModel, uniformProjection, uniformView, projection);
+		glm::mat4 view = camera.calculateViewMatrix();
+		view = glm::rotate(view, toRadians * currentAngle, glm::vec3(0.0f, 1.0f, 0.0f));
 		glUniformMatrix4fv(uniformProjection, 1, GL_FALSE, glm::value_ptr(projection));
-		glUniformMatrix4fv(uniformView, 1, GL_FALSE, glm::value_ptr(camera.calculateViewMatrix()));
+		glUniformMatrix4fv(uniformView, 1, GL_FALSE, glm::value_ptr(view));
 		glUniform3f(uniformEyePosition, camera.getCameraPosition().x, camera.getCameraPosition().y, camera.getCameraPosition().z);
 
 		glm::mat4 model(1.0f);
