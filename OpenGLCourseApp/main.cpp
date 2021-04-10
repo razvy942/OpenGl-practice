@@ -19,7 +19,7 @@
 #include "Shader.h"
 #include "Camera.h"
 #include "Texture.h"
-#include "Light.h"
+#include "DirectionalLight.h"
 #include "Utils.h"
 #include "Material.h"
 
@@ -45,7 +45,7 @@ Texture whiteMarbleTexture;
 Material shinyMaterial;
 Material dullMaterial;
 
-Light mainLight;
+DirectionalLight mainLight;
 
 GLfloat deltaTime = 0.0f;
 GLfloat lastTime = 0.0f;
@@ -61,7 +61,7 @@ void calcAverageNormals(unsigned int* indices, unsigned int indiceCount, float* 
 	unsigned int vertexCount, unsigned int vLength, unsigned int normalOffset);
 void CreateObjects();
 void CreateShaders();
-void applyLight(Light* light);
+void changeCamera(float* currentAngle);
 void createGrid(int squareCount);
 
 void renderObjects(unsigned int uniformModel, unsigned int uniformProjection, unsigned int uniformView, glm::mat4 projection);
@@ -94,10 +94,11 @@ int main()
 	shinyMaterial = Material(1.0f, 16.0f);
 	dullMaterial = Material(0.3f, 4.0f);
 	
-	mainLight = Light(1.0f, 1.0f, 1.0f, 0.2f, 2.0f, -1.0f, -2.0f, 0.3f);
+	mainLight = DirectionalLight(1.0f, 1.0f, 1.0f, 
+		0.2f, 0.3f, 
+		2.0f, -1.0f, -2.0f);
 
 	GLuint uniformProjection = 0, uniformModel = 0, uniformView = 0, uniformEyePosition = 0,
-		uniformAmbientIntensity = 0, uniformAmbientColour = 0, uniformDiffuseIntensity = 0, uniformDirection = 0,
 		uniformSpecularIntensity = 0, uniformShininess = 0;
 
 	glm::mat4 projection = glm::perspective(glm::radians(45.0f), (GLfloat)mainWindow.getBufferWidth() / mainWindow.getBufferHeight(), 0.1f, 100.0f);
@@ -126,27 +127,7 @@ int main()
 
 		// Get + Handle User Input
 		glfwPollEvents();
-
-		if (mainWindow.getsKeys()[GLFW_KEY_1])
-		{
-			camera = camera2;
-		}
-		if (mainWindow.getsKeys()[GLFW_KEY_2])
-		{
-			camera = camera3;
-		}
-		if (mainWindow.getsKeys()[GLFW_KEY_3])
-		{
-			camera = camera4;
-		}
-		if (mainWindow.getsKeys()[GLFW_KEY_LEFT])
-		{
-			currentAngle--;
-		}
-		if (mainWindow.getsKeys()[GLFW_KEY_RIGHT])
-		{
-			currentAngle++;
-		}
+		changeCamera(&currentAngle);
 		
 
 		camera.keyControl(mainWindow.getsKeys(), deltaTime);
@@ -160,16 +141,13 @@ int main()
 		uniformModel = shaderList[0].GetModelLocation();
 		uniformProjection = shaderList[0].GetProjectionLocation();
 		uniformView = shaderList[0].GetViewLocation();
-		uniformAmbientColour = shaderList[0].GetAmbientColourLocation();
-		uniformAmbientIntensity = shaderList[0].GetAmbientIntensityLocation();
-		uniformDiffuseIntensity = shaderList[0].GetDiffuseIntensityLocation();
-		uniformDirection = shaderList[0].GetDirectionLocation();
 		uniformEyePosition = shaderList[0].GetEyePositionLocation();
 		uniformSpecularIntensity = shaderList[0].GetSpecularIntensityLocation();
 		uniformShininess = shaderList[0].GetShininessLocation();
 
+		shaderList[0].SetDirectionalLight(&mainLight);
 		
-		mainLight.useLight(uniformAmbientIntensity, uniformAmbientColour, uniformDiffuseIntensity, uniformDirection);
+		//mainLight.useLight(uniformAmbientIntensity, uniformAmbientColour, uniformDiffuseIntensity, uniformDirection);
 
 		// renderObjects(uniformModel, uniformProjection, uniformView, projection);
 		glm::mat4 view = camera.calculateViewMatrix();
@@ -332,23 +310,6 @@ void renderObjects(unsigned int uniformModel, unsigned int uniformProjection, un
 
 	objectList[0]->SetModelMatrix(model, 4);
 	objectList[0]->RenderObject();
-	//objectList[0]->RenderLetters(&blackMarbleTexture, &blackMarbleTexture, false);
-
-	//model = glm::mat4(1.0f);
-	//brickTexture.UseTexture();
-	//model = glm::translate(model, glm::vec3(1.0f, 0.0f, -.5f));
-	//model = glm::scale(model, glm::vec3(0.5f, 0.5f, 0.5f));
-	//meshList[3]->SetModelMatrix(model, uniformModel);
-	//meshList[3]->RenderMesh();
-	//// test
-
-	//model = glm::mat4(1.0f);
-	//brickTexture.UseTexture();
-	//model = glm::translate(model, glm::vec3(-1.0f, 0.0f, -.5f));
-	//model = glm::scale(model, glm::vec3(0.5f, 0.5f, 0.5f));
-	//model = glm::rotate(model, toRadians * 90, glm::vec3(1.0f, 0.0f, 0.0f));
-	//meshList[4]->SetModelMatrix(model, uniformModel);
-	//meshList[4]->RenderMesh();
 }
 
 void calcAverageNormals(unsigned int* indices, unsigned int indiceCount, float* vertices,
@@ -416,12 +377,26 @@ void CreateShaders()
 	shaderList.push_back(*shader1);
 }
 
-void applyLight(Light* light)
+void changeCamera(float* currentAngle)
 {
-	GLuint uniformAmbientColour = shaderList[0].GetAmbientColourLocation();
-	GLuint uniformAmbientIntensity = shaderList[0].GetAmbientIntensityLocation();
-	GLuint uniformDiffuseIntensity = shaderList[0].GetDiffuseIntensityLocation();
-	GLuint uniformDirection = shaderList[0].GetDirectionLocation();
-
-	light->useLight(uniformAmbientIntensity, uniformAmbientColour, uniformDiffuseIntensity, uniformDirection);
+	if (mainWindow.getsKeys()[GLFW_KEY_1])
+	{
+		camera = camera2;
+	}
+	if (mainWindow.getsKeys()[GLFW_KEY_2])
+	{
+		camera = camera3;
+	}
+	if (mainWindow.getsKeys()[GLFW_KEY_3])
+	{
+		camera = camera4;
+	}
+	if (mainWindow.getsKeys()[GLFW_KEY_LEFT])
+	{
+		(*currentAngle)--;
+	}
+	if (mainWindow.getsKeys()[GLFW_KEY_RIGHT])
+	{
+		(*currentAngle)++;
+	}
 }
