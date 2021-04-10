@@ -21,22 +21,26 @@
 #include "Texture.h"
 #include "Light.h"
 #include "Utils.h"
+#include "Material.h"
 
 const float toRadians = 3.14159265f / 180.0f;
 
 Window mainWindow;
 std::vector<Mesh*> meshList;
+std::vector<IndependentMesh*> independentMeshes;
 std::vector<ComplexObject*> objectList;
 std::vector<Shader> shaderList;
 
 Camera camera;
-
 Utils utils;
 
 Texture brickTexture;
 Texture dirtTexture;
 Texture blackMarbleTexture;
 Texture whiteMarbleTexture;
+
+Material shinyMaterial;
+Material dullMaterial;
 
 Light mainLight;
 
@@ -57,6 +61,9 @@ void CreateShaders();
 void applyLight(Light* light);
 void createGrid(int squareCount);
 
+void renderObjects(unsigned int uniformModel, unsigned int uniformProjection, unsigned int uniformView, glm::mat4 projection);
+
+
 int main() 
 {
 	mainWindow = Window(800, 600);
@@ -67,7 +74,7 @@ int main()
 	CreateShaders();
 
 	objectList = std::vector<ComplexObject*>();
-	utils = Utils();
+	utils = Utils(&shaderList[0]);
 
 	camera = Camera(glm::vec3(0.0f, 0.0f, 1.5f), glm::vec3(0.0f, 1.0f, 0.0f), -90.0f, 0.0f, 2.0f, 0.2f);
 
@@ -77,22 +84,33 @@ int main()
 	dirtTexture.LoadTexture(GL_RGBA);
 	blackMarbleTexture = Texture("Textures/FLoor/Marble_Black.jpg");
 	blackMarbleTexture.LoadTexture(GL_RGB);
-	
-	mainLight = Light(1.0f, 1.0f, 1.0f, 0.2f, 2.0f, -1.0f, 2.0f, 1.0f);
 
-	GLuint uniformProjection = 0, uniformModel = 0, uniformView = 0, uniformAmbientIntensity = 0, uniformAmbientColour = 0, uniformDiffuseIntensity = 0, uniformDirection = 0;
+	shinyMaterial = Material(1.0f, 16.0f);
+	dullMaterial = Material(0.3f, 4.0f);
+	
+	mainLight = Light(1.0f, 1.0f, 1.0f, 0.2f, 2.0f, -1.0f, -2.0f, 1.0f);
+
+	GLuint uniformProjection = 0, uniformModel = 0, uniformView = 0, uniformEyePosition = 0,
+		uniformAmbientIntensity = 0, uniformAmbientColour = 0, uniformDiffuseIntensity = 0, uniformDirection = 0,
+		uniformSpecularIntensity = 0, uniformShininess = 0;
+
 	glm::mat4 projection = glm::perspective(glm::radians(45.0f), (GLfloat)mainWindow.getBufferWidth() / mainWindow.getBufferHeight(), 0.1f, 100.0f);
 
 	shaderList[0].UseShader();
 	uniformModel = shaderList[0].GetModelLocation();
 	createGrid(60);
+	
 	utils.CreateLetters(uniformModel, &objectList);
 	
-	IndependentMesh sphere;
+	IndependentMesh sphere = IndependentMesh(&shaderList[0]);
 	utils.createSphere(&sphere);
-	IndependentMesh cylinder;
+	meshList.push_back(&sphere);
+	
+	IndependentMesh cylinder = IndependentMesh(&shaderList[0]);
 	utils.createCylinder(&cylinder, 20, 0.1, 1);
-
+	meshList.push_back(&cylinder);
+	glEnable(GL_NORMALIZE);
+	
 	// Loop until window closed
 	while (!mainWindow.getShouldClose())
 	{
@@ -118,32 +136,40 @@ int main()
 		uniformAmbientIntensity = shaderList[0].GetAmbientIntensityLocation();
 		uniformDiffuseIntensity = shaderList[0].GetDiffuseIntensityLocation();
 		uniformDirection = shaderList[0].GetDirectionLocation();
+		uniformEyePosition = shaderList[0].GetEyePositionLocation();
+		uniformSpecularIntensity = shaderList[0].GetSpecularIntensityLocation();
+		uniformShininess = shaderList[0].GetShininessLocation();
 
 		mainLight.useLight(uniformAmbientIntensity, uniformAmbientColour, uniformDiffuseIntensity, uniformDirection);
-		// applyLight(&mainLight);
-		glm::mat4 model(1.0f);	
+
+		// renderObjects(uniformModel, uniformProjection, uniformView, projection);
+		glUniformMatrix4fv(uniformProjection, 1, GL_FALSE, glm::value_ptr(projection));
+		glUniformMatrix4fv(uniformView, 1, GL_FALSE, glm::value_ptr(camera.calculateViewMatrix()));
+		glUniform3f(uniformEyePosition, camera.getCameraPosition().x, camera.getCameraPosition().y, camera.getCameraPosition().z);
+
+		glm::mat4 model(1.0f);
 
 		model = glm::translate(model, glm::vec3(0.0f, 1.0f, -2.5f));
 		model = glm::scale(model, glm::vec3(0.4f, 0.4f, 1.0f));
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
-		glUniformMatrix4fv(uniformProjection, 1, GL_FALSE, glm::value_ptr(projection));
-		glUniformMatrix4fv(uniformView, 1, GL_FALSE, glm::value_ptr(camera.calculateViewMatrix()));
 		brickTexture.UseTexture();
+		shinyMaterial.useMaterial(uniformSpecularIntensity, uniformShininess);
 		meshList[0]->RenderMesh();
 
 		model = glm::mat4(1.0f);
 		model = glm::translate(model, glm::vec3(0.0f, 0.0f, -2.5f));
 		model = glm::scale(model, glm::vec3(0.4f, 0.4f, 1.0f));
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+
 		dirtTexture.UseTexture();
+		//dullMaterial.useMaterial(uniformSpecularIntensity, uniformShininess);
 		meshList[1]->RenderMesh();
 
 		model = glm::mat4(1.0f);
 		model = glm::translate(model, glm::vec3(-2.5f, -0.5f, -2.5f));
 		model = glm::scale(model, glm::vec3(5.0f, 1.0f, 5.0f));
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
-		glUniformMatrix4fv(uniformProjection, 1, GL_FALSE, glm::value_ptr(projection));
-		glUniformMatrix4fv(uniformView, 1, GL_FALSE, glm::value_ptr(camera.calculateViewMatrix()));
+
 		blackMarbleTexture.UseTexture();
 		meshList[2]->RenderMesh();
 
@@ -152,7 +178,7 @@ int main()
 		model = glm::mat4(1.0f);
 		model = glm::translate(model, glm::vec3(-0.4f, 0.0f, -.5f));
 		model = glm::scale(model, glm::vec3(0.1f, 0.1f, 0.1f));
-		
+
 		objectList[0]->SetModelMatrix(model, 4);
 		objectList[0]->RenderObject();
 		//objectList[0]->RenderLetters(&blackMarbleTexture, &blackMarbleTexture, false);
@@ -164,7 +190,7 @@ int main()
 		sphere.SetModelMatrix(model, uniformModel);
 		sphere.RenderMesh();
 		// test
-		
+
 		model = glm::mat4(1.0f);
 		brickTexture.UseTexture();
 		model = glm::translate(model, glm::vec3(-1.0f, 0.0f, -.5f));
@@ -172,7 +198,6 @@ int main()
 		model = glm::rotate(model, toRadians * 90, glm::vec3(1.0f, 0.0f, 0.0f));
 		cylinder.SetModelMatrix(model, uniformModel);
 		cylinder.RenderMesh();
-		
 		
 		glUseProgram(0);
 
@@ -233,9 +258,65 @@ void createGrid(int squareCount)
 
 	calcAverageNormals(&indices[0], indices.size(), &vertices[0], vertices.size(), 8, 5);
 
-	Mesh* gridObj = new Mesh();
+	IndependentMesh* gridObj = new IndependentMesh(&shaderList[0]);
 	gridObj->CreateMesh(&vertices[0], &indices[0], vertices.size(), indices.size());
 	meshList.push_back(gridObj);
+}
+
+void renderObjects(unsigned int uniformModel, unsigned int uniformProjection, unsigned int uniformView, glm::mat4 projection)
+{
+
+	glm::mat4 model(1.0f);
+
+	model = glm::translate(model, glm::vec3(0.0f, 1.0f, -2.5f));
+	model = glm::scale(model, glm::vec3(0.4f, 0.4f, 1.0f));
+	glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+	glUniformMatrix4fv(uniformProjection, 1, GL_FALSE, glm::value_ptr(projection));
+	glUniformMatrix4fv(uniformView, 1, GL_FALSE, glm::value_ptr(camera.calculateViewMatrix()));
+	brickTexture.UseTexture();
+	meshList[0]->RenderMesh();
+
+	model = glm::mat4(1.0f);
+	model = glm::translate(model, glm::vec3(0.0f, 0.0f, -2.5f));
+	model = glm::scale(model, glm::vec3(0.4f, 0.4f, 1.0f));
+	glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+	dirtTexture.UseTexture();
+	meshList[1]->RenderMesh();
+
+	model = glm::mat4(1.0f);
+	model = glm::translate(model, glm::vec3(-2.5f, -0.5f, -2.5f));
+	model = glm::scale(model, glm::vec3(5.0f, 1.0f, 5.0f));
+	glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+	glUniformMatrix4fv(uniformProjection, 1, GL_FALSE, glm::value_ptr(projection));
+	glUniformMatrix4fv(uniformView, 1, GL_FALSE, glm::value_ptr(camera.calculateViewMatrix()));
+	blackMarbleTexture.UseTexture();
+	meshList[2]->RenderMesh();
+
+
+	// LETTERS
+	model = glm::mat4(1.0f);
+	model = glm::translate(model, glm::vec3(-0.4f, 0.0f, -.5f));
+	model = glm::scale(model, glm::vec3(0.1f, 0.1f, 0.1f));
+
+	objectList[0]->SetModelMatrix(model, 4);
+	objectList[0]->RenderObject();
+	//objectList[0]->RenderLetters(&blackMarbleTexture, &blackMarbleTexture, false);
+
+	//model = glm::mat4(1.0f);
+	//brickTexture.UseTexture();
+	//model = glm::translate(model, glm::vec3(1.0f, 0.0f, -.5f));
+	//model = glm::scale(model, glm::vec3(0.5f, 0.5f, 0.5f));
+	//meshList[3]->SetModelMatrix(model, uniformModel);
+	//meshList[3]->RenderMesh();
+	//// test
+
+	//model = glm::mat4(1.0f);
+	//brickTexture.UseTexture();
+	//model = glm::translate(model, glm::vec3(-1.0f, 0.0f, -.5f));
+	//model = glm::scale(model, glm::vec3(0.5f, 0.5f, 0.5f));
+	//model = glm::rotate(model, toRadians * 90, glm::vec3(1.0f, 0.0f, 0.0f));
+	//meshList[4]->SetModelMatrix(model, uniformModel);
+	//meshList[4]->RenderMesh();
 }
 
 void calcAverageNormals(unsigned int* indices, unsigned int indiceCount, float* vertices,

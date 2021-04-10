@@ -9,6 +9,17 @@ Mesh::Mesh()
 	renderType = GL_TRIANGLES;
 }
 
+
+Mesh::Mesh(Shader* shader)
+{
+	VAO = 0;
+	VBO = 0;
+	IBO = 0;
+	indexCount = 0;
+	renderType = GL_TRIANGLES;
+	this->shader = shader;
+}
+
 void Mesh::CreateMesh(GLfloat *vertices, unsigned int *indices, unsigned int numOfVertices, unsigned int numOfIndices)
 {
 	indexCount = numOfIndices;

@@ -55,6 +55,8 @@
 
 #pragma once
 #include "Mesh.h"
+#include "Material.h"
+
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
@@ -65,8 +67,8 @@ public:
 	/// <summary>
 	/// Creates an Independent Mesh, a mesh that has its own Model Matrix with custom transformations attached to it.
 	/// </summary>
-	IndependentMesh();
-	IndependentMesh(GLenum renderType);
+	IndependentMesh(Shader* shader);
+	IndependentMesh(GLenum renderType, Shader* shader);
 	~IndependentMesh();
 
 	/// <summary>

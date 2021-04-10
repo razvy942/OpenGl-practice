@@ -6,6 +6,12 @@ Utils::Utils()
 	calcAverageNormals(indices, 36, vertices, 192, 8, 5);
 }
 
+Utils::Utils(Shader* shader)
+{
+	calcAverageNormals(indices, 36, vertices, 192, 8, 5);
+	this->shader = shader;
+}
+
 float Utils::toRadians(float deg)
 {
 	return deg * (3.14159265f / 180.0f);
@@ -16,7 +22,7 @@ ComplexObject* Utils::CreateLetterP(GLuint uniformModel)
 	// LETTER P
 
 	// Creating the base of the letter P
-	IndependentMesh* pBase = new IndependentMesh();
+	IndependentMesh* pBase = new IndependentMesh(shader);
 	pBase->CreateMeshWithTexParams(vertices, indices, 192, 36);
 	glm::mat4 model = glm::mat4(1.0f);
 
@@ -27,7 +33,7 @@ ComplexObject* Utils::CreateLetterP(GLuint uniformModel)
 
 
 	// Creating top part of p
-	IndependentMesh* pTop = new IndependentMesh();
+	IndependentMesh* pTop = new IndependentMesh(shader);
 	pTop->CreateMeshWithTexParams(vertices, indices, 192, 36);
 	model = glm::mat4(1.0f);
 
@@ -37,7 +43,7 @@ ComplexObject* Utils::CreateLetterP(GLuint uniformModel)
 	pTop->SetModelMatrix(model, uniformModel);
 
 	// Creating right side of top
-	IndependentMesh* pTopRight = new IndependentMesh();
+	IndependentMesh* pTopRight = new IndependentMesh(shader);
 	pTopRight->CreateMeshWithTexParams(vertices, indices, 192, 36);
 	model = glm::mat4(1.0f);
 
@@ -47,7 +53,7 @@ ComplexObject* Utils::CreateLetterP(GLuint uniformModel)
 	pTopRight->SetModelMatrix(model, uniformModel);
 
 	// Creating bottom of top
-	IndependentMesh* pTopBottom = new IndependentMesh();
+	IndependentMesh* pTopBottom = new IndependentMesh(shader);
 	pTopBottom->CreateMeshWithTexParams(vertices, indices, 192, 36);
 	model = glm::mat4(1.0f);
 
@@ -72,7 +78,7 @@ ComplexObject* Utils::CreateLetterR(GLuint uniformModel)
 	// LETTER R
 
 	// Creating the base of the letter R
-	IndependentMesh* rBase = new IndependentMesh();
+	IndependentMesh* rBase = new IndependentMesh(shader);
 	rBase->CreateMeshWithTexParams(vertices, indices, 192, 36);
 	glm::mat4 model = glm::mat4(1.0f);
 
@@ -83,7 +89,7 @@ ComplexObject* Utils::CreateLetterR(GLuint uniformModel)
 
 
 	// Creating top part of R
-	IndependentMesh* rTop = new IndependentMesh();
+	IndependentMesh* rTop = new IndependentMesh(shader);
 	rTop->CreateMeshWithTexParams(vertices, indices, 192, 36);
 	model = glm::mat4(1.0f);
 
@@ -93,7 +99,7 @@ ComplexObject* Utils::CreateLetterR(GLuint uniformModel)
 	rTop->SetModelMatrix(model, uniformModel);
 
 	// Creating right side of top
-	IndependentMesh* rTopRight = new IndependentMesh();
+	IndependentMesh* rTopRight = new IndependentMesh(shader);
 	rTopRight->CreateMeshWithTexParams(vertices, indices, 192, 36);
 	model = glm::mat4(1.0f);
 
@@ -103,7 +109,7 @@ ComplexObject* Utils::CreateLetterR(GLuint uniformModel)
 	rTopRight->SetModelMatrix(model, uniformModel);
 
 	// Creating bottom of top
-	IndependentMesh* rTopBottom = new IndependentMesh();
+	IndependentMesh* rTopBottom = new IndependentMesh(shader);
 	rTopBottom->CreateMeshWithTexParams(vertices, indices, 192, 36);
 	model = glm::mat4(1.0f);
 
@@ -114,7 +120,7 @@ ComplexObject* Utils::CreateLetterR(GLuint uniformModel)
 
 
 	// Creating bottom 
-	IndependentMesh* rBottom = new IndependentMesh();
+	IndependentMesh* rBottom = new IndependentMesh(shader);
 	rBottom->CreateMeshWithTexParams(vertices, indices, 192, 36);
 	model = glm::mat4(1.0f);
 
@@ -167,6 +173,7 @@ void Utils::CreateLetters(unsigned int modelLocation, std::vector<ComplexObject*
 	objectList->push_back(razvanNameAndID);
 }
 
+
 void Utils::createSphere(IndependentMesh* mesh)
 {
 	int verticalDiv;
@@ -207,9 +214,9 @@ void Utils::createSphere(IndependentMesh* mesh)
 			vertices.push_back((float)i / verticalDiv);
 			
 
-			vertices.push_back(x); 
-			vertices.push_back(y); 
-			vertices.push_back(z); 
+			vertices.push_back(-1 * x); 
+			vertices.push_back(-1 * y);
+			vertices.push_back(-1 * z);
 
 
 			horizontalAng += horizontalDiff;
@@ -337,9 +344,9 @@ void Utils::createCylinder(IndependentMesh* mesh, int sectorCount, float radius,
 			vertices.push_back(t);                      // t
 			
 			// normal vector
-			vertices.push_back(ux);                       // nx
-			vertices.push_back(uy);                       // ny
-			vertices.push_back(uz);                       // nz
+			vertices.push_back(-1 * ux);                       // nx
+			vertices.push_back(-1 * uy);                       // ny
+			vertices.push_back(-1 * uz);                       // nz
 		}
 	}
 
@@ -464,7 +471,7 @@ void Utils::calcAverageNormals(unsigned int* indices, unsigned int indiceCount, 
 		unsigned int nOffset = i * vLength + normalOffset;
 		glm::vec3 vec = glm::vec3(vertices[nOffset], vertices[nOffset + 1], vertices[nOffset + 2]);
 		vec = glm::normalize(vec);
-		vertices[nOffset] = vec.x; vertices[nOffset + 1] = vec.y, vertices[nOffset + 2] = vec.z;
+		vertices[nOffset] = -1 * vec.x; vertices[nOffset + 1] = -1 * vec.y, vertices[nOffset + 2] = -1 * vec.z;
 	}
 }
 

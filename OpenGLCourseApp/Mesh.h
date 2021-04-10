@@ -6,12 +6,14 @@
 #include <glm/gtc/type_ptr.hpp>
 
 #include "Texture.h"
+#include "Shader.h"
 
 class Mesh
 {
 public:
 	Mesh();
-	Mesh(GLenum renderType);
+	Mesh(Shader* shader);
+	Mesh(GLenum renderType, Shader* shader);
 
 	void CreateMesh(GLfloat *vertices, unsigned int *indices, unsigned int numOfVertices, unsigned int numOfIndices);
 	void CreateMeshWithTexParams(GLfloat* vertices, unsigned int* indices, unsigned int numOfVertices, unsigned int numOfIndices);
@@ -32,6 +34,7 @@ protected:
 	GLenum renderType;
 	GLuint VAO, VBO, IBO;
 	GLsizei indexCount;
+	Shader* shader;
 };
 
 
