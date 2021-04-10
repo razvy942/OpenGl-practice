@@ -66,7 +66,7 @@ void renderObjects(unsigned int uniformModel, unsigned int uniformProjection, un
 
 int main() 
 {
-	mainWindow = Window(800, 600);
+	mainWindow = Window(1366, 768);
 	mainWindow.Initialise();
 
 	
@@ -88,7 +88,7 @@ int main()
 	shinyMaterial = Material(1.0f, 16.0f);
 	dullMaterial = Material(0.3f, 4.0f);
 	
-	mainLight = Light(1.0f, 1.0f, 1.0f, 0.2f, 2.0f, -1.0f, -2.0f, 1.0f);
+	mainLight = Light(1.0f, 1.0f, 1.0f, 0.2f, 2.0f, -1.0f, -2.0f, 0.3f);
 
 	GLuint uniformProjection = 0, uniformModel = 0, uniformView = 0, uniformEyePosition = 0,
 		uniformAmbientIntensity = 0, uniformAmbientColour = 0, uniformDiffuseIntensity = 0, uniformDirection = 0,
@@ -162,9 +162,10 @@ int main()
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
 
 		dirtTexture.UseTexture();
-		//dullMaterial.useMaterial(uniformSpecularIntensity, uniformShininess);
+		// dullMaterial.useMaterial(uniformSpecularIntensity, uniformShininess);
 		meshList[1]->RenderMesh();
 
+		// Grid
 		model = glm::mat4(1.0f);
 		model = glm::translate(model, glm::vec3(-2.5f, -0.5f, -2.5f));
 		model = glm::scale(model, glm::vec3(5.0f, 1.0f, 5.0f));
@@ -177,7 +178,7 @@ int main()
 		// LETTERS
 		model = glm::mat4(1.0f);
 		model = glm::translate(model, glm::vec3(-0.4f, 0.0f, -.5f));
-		model = glm::scale(model, glm::vec3(0.1f, 0.1f, 0.1f));
+		model = glm::scale(model, glm::vec3(0.05f, 0.05f, 0.05f));
 
 		objectList[0]->SetModelMatrix(model, 4);
 		objectList[0]->RenderObject();
@@ -360,9 +361,9 @@ void CreateObjects()
 
 	float vertices[] = {
 		//	x      y      z			u	  v			normals (need to be averaged out before being sent to shaders): 0.0f because they're just placeholders for now
-			-1.0f, -1.0f, 0.0f,		0.0f, 0.0f,		0.0f, 0.0f, 0.0f,
+			-1.0f, -1.0f, -0.6f,		0.0f, 0.0f,		0.0f, 0.0f, 0.0f,
 			0.0f, -1.0f, 1.0f,		0.5f, 0.0f,		0.0f, 0.0f, 0.0f,
-			1.0f, -1.0f, 0.0f,		1.0f, 0.0f,		0.0f, 0.0f, 0.0f,
+			1.0f, -1.0f, -0.6f,		1.0f, 0.0f,		0.0f, 0.0f, 0.0f,
 			0.0f, 1.0f, 0.0f,		0.5f, 1.0f,		0.0f, 0.0f, 0.0f,
 	};
 

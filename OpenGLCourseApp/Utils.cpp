@@ -23,18 +23,18 @@ ComplexObject* Utils::CreateLetterP(GLuint uniformModel)
 
 	// Creating the base of the letter P
 	IndependentMesh* pBase = new IndependentMesh(shader);
-	pBase->CreateMeshWithTexParams(vertices, indices, 192, 36);
+	createSphere(pBase);
 	glm::mat4 model = glm::mat4(1.0f);
 
 	model = glm::translate(model, glm::vec3(0.0f, 2.0f, 0.0f));
-	model = glm::scale(model, glm::vec3(1.0f, 6.0f, 1.0f));
+	model = glm::scale(model, glm::vec3(0.8f, 3.8f, 1.0f));
 
 	pBase->SetModelMatrix(model, uniformModel);
 
 
 	// Creating top part of p
 	IndependentMesh* pTop = new IndependentMesh(shader);
-	pTop->CreateMeshWithTexParams(vertices, indices, 192, 36);
+	pTop->CreateMesh(vertices, indices, 192, 36);
 	model = glm::mat4(1.0f);
 
 	model = glm::translate(model, glm::vec3(2.0f, 4.5f, 0.0f));
@@ -44,17 +44,17 @@ ComplexObject* Utils::CreateLetterP(GLuint uniformModel)
 
 	// Creating right side of top
 	IndependentMesh* pTopRight = new IndependentMesh(shader);
-	pTopRight->CreateMeshWithTexParams(vertices, indices, 192, 36);
+	createSphere(pTopRight);
 	model = glm::mat4(1.0f);
 
 	model = glm::translate(model, glm::vec3(3.0f, 3.15f, 0.0f));
-	model = glm::scale(model, glm::vec3(1.0f, 1.7f, 1.0f));
+	model = glm::scale(model, glm::vec3(0.8f, 1.7f, 1.0f));
 
 	pTopRight->SetModelMatrix(model, uniformModel);
 
 	// Creating bottom of top
 	IndependentMesh* pTopBottom = new IndependentMesh(shader);
-	pTopBottom->CreateMeshWithTexParams(vertices, indices, 192, 36);
+	pTopBottom->CreateMesh(vertices, indices, 192, 36);
 	model = glm::mat4(1.0f);
 
 	model = glm::translate(model, glm::vec3(2.0f, 1.8f, 0.0f));
@@ -72,6 +72,22 @@ ComplexObject* Utils::CreateLetterP(GLuint uniformModel)
 	return pLetter;
 }
 
+ComplexObject* Utils::CreateLetterI(GLuint uniformModel)
+{
+	IndependentMesh* iBase = new IndependentMesh(shader);
+	createSphere(iBase);
+	glm::mat4 model = glm::mat4(1.0f);
+
+	model = glm::translate(model, glm::vec3(0.0f, 2.0f, 0.0f));
+	model = glm::scale(model, glm::vec3(0.8f, 3.8f, 1.0f));
+
+	iBase->SetModelMatrix(model, uniformModel);
+
+	ComplexObject* iLetter = new ComplexObject();
+	iLetter->meshList.push_back(iBase);
+	
+	return iLetter;
+}
 
 ComplexObject* Utils::CreateLetterR(GLuint uniformModel)
 {
@@ -79,18 +95,18 @@ ComplexObject* Utils::CreateLetterR(GLuint uniformModel)
 
 	// Creating the base of the letter R
 	IndependentMesh* rBase = new IndependentMesh(shader);
-	rBase->CreateMeshWithTexParams(vertices, indices, 192, 36);
+	createSphere(rBase);
 	glm::mat4 model = glm::mat4(1.0f);
 
 	model = glm::translate(model, glm::vec3(0.0f, 2.0f, 0.0f));
-	model = glm::scale(model, glm::vec3(1.0f, 6.0f, 1.0f));
+	model = glm::scale(model, glm::vec3(0.8f, 3.5f, 1.0f));
 
 	rBase->SetModelMatrix(model, uniformModel);
 
 
 	// Creating top part of R
 	IndependentMesh* rTop = new IndependentMesh(shader);
-	rTop->CreateMeshWithTexParams(vertices, indices, 192, 36);
+	rTop->CreateMesh(vertices, indices, 192, 36);
 	model = glm::mat4(1.0f);
 
 	model = glm::translate(model, glm::vec3(2.0f, 4.5f, 0.0f));
@@ -100,17 +116,17 @@ ComplexObject* Utils::CreateLetterR(GLuint uniformModel)
 
 	// Creating right side of top
 	IndependentMesh* rTopRight = new IndependentMesh(shader);
-	rTopRight->CreateMeshWithTexParams(vertices, indices, 192, 36);
+	createSphere(rTopRight);
 	model = glm::mat4(1.0f);
 
 	model = glm::translate(model, glm::vec3(3.0f, 3.15f, 0.0f));
-	model = glm::scale(model, glm::vec3(1.0f, 1.7f, 1.0f));
+	model = glm::scale(model, glm::vec3(0.8f, 1.7f, 1.0f));
 
 	rTopRight->SetModelMatrix(model, uniformModel);
 
 	// Creating bottom of top
 	IndependentMesh* rTopBottom = new IndependentMesh(shader);
-	rTopBottom->CreateMeshWithTexParams(vertices, indices, 192, 36);
+	rTopBottom->CreateMesh(vertices, indices, 192, 36);
 	model = glm::mat4(1.0f);
 
 	model = glm::translate(model, glm::vec3(2.0f, 1.8f, 0.0f));
@@ -121,7 +137,7 @@ ComplexObject* Utils::CreateLetterR(GLuint uniformModel)
 
 	// Creating bottom 
 	IndependentMesh* rBottom = new IndependentMesh(shader);
-	rBottom->CreateMeshWithTexParams(vertices, indices, 192, 36);
+	rBottom->CreateMesh(vertices, indices, 192, 36);
 	model = glm::mat4(1.0f);
 
 	model = glm::translate(model, glm::vec3(2.0f, 0.5f, 0.0f));
@@ -141,38 +157,126 @@ ComplexObject* Utils::CreateLetterR(GLuint uniformModel)
 	return rLetter;
 }
 
+ComplexObject* Utils::CreateLetterV(GLuint uniformModel)
+{
+	glm::mat4 model = glm::mat4(1.0f);
+	// Creating bottom 
+	IndependentMesh* vLeft = new IndependentMesh(shader);
+	vLeft->CreateMesh(vertices, indices, 192, 36);
+	model = glm::mat4(1.0f);
 
+	model = glm::translate(model, glm::vec3(0.2f, 0.5f, 0.0f));
+	model = glm::rotate(model, toRadians(35), glm::vec3(0.0f, 0.0f, 1.0f));
+	model = glm::scale(model, glm::vec3(1.0f, 5.0f, 1.0f));
+
+	vLeft->SetModelMatrix(model, uniformModel);
+
+	IndependentMesh* vRight = new IndependentMesh(shader);
+	vRight->CreateMesh(vertices, indices, 192, 36);
+	model = glm::mat4(1.0f);
+
+	model = glm::translate(model, glm::vec3(2.5f, 0.5f, 0.0f));
+	model = glm::rotate(model, toRadians(-35), glm::vec3(0.0f, 0.0f, 1.0f));
+	model = glm::scale(model, glm::vec3(1.0f, 5.0f, 1.0f));
+
+	vRight->SetModelMatrix(model, uniformModel);
+
+	ComplexObject* vLetter = new ComplexObject();
+	vLetter->meshList.push_back(vLeft);
+	vLetter->meshList.push_back(vRight);
+
+	return vLetter;
+}
+
+ComplexObject* Utils::CreateLetterU(GLuint uniformModel)
+{
+	glm::mat4 model = glm::mat4(1.0f);
+	
+	IndependentMesh* uLeft = new IndependentMesh(shader);
+	createSphere(uLeft);
+
+	model = glm::translate(model, glm::vec3(0.0f, 2.0f, 0.0f));
+	model = glm::scale(model, glm::vec3(0.8f, 3.5f, 1.0f));
+
+	uLeft->SetModelMatrix(model, uniformModel);
+
+	
+	model = glm::mat4(1.0f);
+	IndependentMesh* uRight = new IndependentMesh(shader);
+	createSphere(uRight);
+
+	model = glm::translate(model, glm::vec3(3.0f, 2.0f, 0.0f));
+	model = glm::scale(model, glm::vec3(0.8f, 3.5f, 1.0f));
+
+	uRight->SetModelMatrix(model, uniformModel);
+
+
+	IndependentMesh* uBottom = new IndependentMesh(shader);
+	uBottom->CreateMesh(vertices, indices, 192, 36);
+	model = glm::mat4(1.0f);
+
+	model = glm::translate(model, glm::vec3(1.4f, -0.5f, 0.0f));
+	model = glm::scale(model, glm::vec3(3.3f, 1.0f, 1.0f));
+
+	uBottom->SetModelMatrix(model, uniformModel);
+
+	ComplexObject* uLetter = new ComplexObject();
+	uLetter->meshList.push_back(uLeft);
+	uLetter->meshList.push_back(uRight);
+	uLetter->meshList.push_back(uBottom);
+
+	return uLetter;
+}
 
 void Utils::CreateLetters(unsigned int modelLocation, std::vector<ComplexObject*>* objectList) {	
 	//////////////////////////////////////////
-	// Creating Razvan's name and ID object //
+	// Creating Razvan's name object        //
 	//////////////////////////////////////////
 	glm::mat4 model = glm::mat4(1.0f);
 
-	ComplexObject* letterR = CreateLetterR(modelLocation);
 	ComplexObject* letterP = CreateLetterP(modelLocation);
+	ComplexObject* letterI = CreateLetterI(modelLocation);
+	ComplexObject* letterR = CreateLetterR(modelLocation);
+	ComplexObject* letterV = CreateLetterV(modelLocation);
+	ComplexObject* letterU = CreateLetterU(modelLocation);
+	ComplexObject* letterR2 = CreateLetterR(modelLocation);
+	
+	
+	// P translate
+	model = glm::mat4(1.0f);
+	model = glm::translate(model, glm::vec3(0.0f, 0.0f, -2.0f));
+	letterP->SetModelMatrix(model, modelLocation);
+	// I translate
+	model = glm::mat4(1.0f);
+	model = glm::translate(model, glm::vec3(0.0f, 7.5f, -2.0f));
+	letterI->SetModelMatrix(model, modelLocation);
 	// R translate
 	model = glm::mat4(1.0f);
-	//model = glm::scale(model, glm::vec3(0.17f, 0.17f, 0.2f));
-	model = glm::translate(model, glm::vec3(0.0f, 0.0f, -2.0f));
-	model = glm::rotate(model, glm::radians(30.0f), glm::vec3(0.0f, 1.0f, 0.0f));
+	model = glm::translate(model, glm::vec3(0.0f, 15.0f, -2.0f));
 	letterR->SetModelMatrix(model, modelLocation);
-	//// P translate
+	// V
 	model = glm::mat4(1.0f);
-	//model = glm::scale(model, glm::vec3(0.17f, 0.17f, 0.2f));
-	model = glm::translate(model, glm::vec3(5.0f, 0.0f, -2.0f));
-	model = glm::rotate(model, glm::radians(-10.0f), glm::vec3(0.0f, 1.0f, 0.0f));
-	letterP->SetModelMatrix(model, modelLocation);
-
+	model = glm::translate(model, glm::vec3(0.0f, 22.5f, -2.0f));
+	letterV->SetModelMatrix(model, modelLocation);
+	// U
+	model = glm::mat4(1.0f);
+	model = glm::translate(model, glm::vec3(0.0f, 27.0f, -2.0f));
+	letterU->SetModelMatrix(model, modelLocation);
+	// R 2
+	model = glm::mat4(1.0f);
+	model = glm::translate(model, glm::vec3(0.0f, 34.5f, -2.0f));
+	letterR2->SetModelMatrix(model, modelLocation);
 
 	ComplexObject* razvanNameAndID = new ComplexObject();
-	razvanNameAndID->objectList.push_back(letterR);
 	razvanNameAndID->objectList.push_back(letterP);
-
+	razvanNameAndID->objectList.push_back(letterI);
+	razvanNameAndID->objectList.push_back(letterR);
+	razvanNameAndID->objectList.push_back(letterV);
+	razvanNameAndID->objectList.push_back(letterU);
+	razvanNameAndID->objectList.push_back(letterR2);
 
 	objectList->push_back(razvanNameAndID);
 }
-
 
 void Utils::createSphere(IndependentMesh* mesh)
 {
@@ -252,51 +356,6 @@ void Utils::createSphere(IndependentMesh* mesh)
 	// calcAverageNormals(&indices[0], indices.size(), &vertices[0], vertices.size(), 8, 5);
 	mesh->CreateMesh(&vertices[0], &indices[0], vertices.size(), indices.size());
 }
-
-//void Utils::createCylinder(IndependentMesh* mesh)
-//{
-//	// Amount of points on the circle faces, more points results in a more circular looking cylinder
-//	int sides = 20;
-//	// refers to the top and bottom part of the cylinder, totaling 2
-//	int faces = 2;
-//	// Radius of the cylinder
-//	float radius = 1.0f;
-//	std::vector<float> vertices;
-//	std::vector<unsigned int> indices;
-//
-//	for (int i = 0; i <= 365; i += 360 / sides)		// <= to 365 because otherwise the last vertex that closes the circle would not be drawn
-//	{
-//		for (int j = 0; j < faces; j++)
-//		{
-//			float heading = toRadians(i);
-//			vertices.push_back((cos(heading) * radius) / sides);
-//			vertices.push_back((sin(heading) * radius) / sides);
-//			vertices.push_back(float(j) / float(faces));
-//		}
-//	}
-//
-//	// Refers to the current point on the circle (circle is made of multiple points 
-//	int currentPoint = 0;
-//	for (int i = 0; i < 360; i += 360 / sides)
-//	{
-//
-//		for (int j = 0; j < 360; j += 360 / sides)
-//		{
-//			indices.push_back(currentPoint);
-//			indices.push_back(currentPoint + 1);
-//			indices.push_back(currentPoint + 1 + sides);
-//			indices.push_back(currentPoint + sides);
-//			indices.push_back(currentPoint);
-//
-//			currentPoint += 1 % sides;
-//		}
-//	}
-//
-//	/*Mesh* gridObj = new Mesh();
-//	gridObj->CreateMesh(&vertices[0], &indices[0], vertices.size(), indices.size());
-//	meshList.push_back(gridObj);*/
-//	mesh->CreateMesh(&vertices[0], &indices[0], vertices.size(), indices.size());
-//}
 
 std::vector<float> Utils::getUnitCircleVertices(int sectorCount)
 {
