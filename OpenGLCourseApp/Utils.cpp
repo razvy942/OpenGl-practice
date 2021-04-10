@@ -248,7 +248,7 @@ void Utils::CreateLetters(unsigned int modelLocation, std::vector<ComplexObject*
 	letterP->SetModelMatrix(model, modelLocation);
 	// I translate
 	model = glm::mat4(1.0f);
-	model = glm::translate(model, glm::vec3(0.0f, 7.5f, -2.0f));
+	model = glm::translate(model, glm::vec3(1.5f, 7.5f, -2.0f));
 	letterI->SetModelMatrix(model, modelLocation);
 	// R translate
 	model = glm::mat4(1.0f);
