@@ -17,6 +17,11 @@ public:
 	ComplexObject* CreateLetterR(GLuint uniformModel);
 	ComplexObject* CreateLetterV(GLuint uniformModel);
 	ComplexObject* CreateLetterU(GLuint uniformModel);
+	ComplexObject* CreateStage(GLuint uniformModel);
+	ComplexObject* CreateAxes(GLuint uniformModel);
+
+	void CreateFinalAxes(unsigned int modelLocation, std::vector<ComplexObject*>* objectList); 
+	void CreateFinalStage(unsigned int modelLocation, std::vector<ComplexObject*>* objectList);
 
 	// Sphere code from: http://www.songho.ca/opengl/gl_sphere.html
 	void createSphere(IndependentMesh* mesh);

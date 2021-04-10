@@ -79,13 +79,13 @@ int main()
 	mainWindow.Initialise();
 
 	
-	CreateObjects();
+	//CreateObjects();
 	CreateShaders();
 
 	objectList = std::vector<ComplexObject*>();
 	utils = Utils(&shaderList[0]);
 
-	camera = Camera(glm::vec3(0.0f, 0.0f, 1.5f), glm::vec3(0.0f, 1.0f, 0.0f), -90.0f, 0.0f, 2.0f, 0.2f);
+	camera = Camera(glm::vec3(0.0f, 0.2f, 1.0f), glm::vec3(0.0f, 1.0f, 0.0f), -90.0f, 0.0f, 2.0f, 0.2f);
 	camera2 = Camera(glm::vec3(0.0f, 0.0f, 1.5f), glm::vec3(0.0f, 1.0f, 0.0f), -90.0f, 0.0f, 2.0f, 0.2f);
 	camera3 = Camera(glm::vec3(0.0f, 0.0f, 5.5f), glm::vec3(0.0f, 1.0f, 0.0f), -90.0f, 0.0f, 2.0f, 0.2f);
 	camera4 = Camera(glm::vec3(0.0f, 4.0f, 5.5f), glm::vec3(0.0f, 1.0f, 0.0f), -90.0f, 0.0f, 2.0f, 0.2f);
@@ -108,36 +108,36 @@ int main()
 	dullMaterial = Material(0.3f, 4.0f);
 	
 	mainLight = DirectionalLight(1.0f, 1.0f, 1.0f, 
-		0.1f, 0.1f, 
+		0.5f, 0.5f, 
 		2.0f, -1.0f, -2.0f);
 
 	unsigned int pointLightCount = 0;
 	pointLights[0] = PointLight(0.0f, 1.0f, 0.0f,
 		0.0f, 0.1f,
-		-4.0f, 0.0f, 0.0f,
+		-1.0f, 2.0f, 0.0f,
 		0.3f, 0.2f, 0.1f);
 	pointLightCount++;
 	pointLights[1] = PointLight(0.0f, 0.0f, 0.5f,
 		0.0f, 1.1f,
-		4.0f, 0.0f, 0.0f,
+		1.0f, 0.0f, 0.0f,
 		0.3f, 0.2f, 0.1f);
 	pointLightCount++;
 
 	unsigned int spotLightCount = 0;
-	spotLights[0] = SpotLight(1.0f, 1.0f, 1.0f,
-		0.1f, 0.5f,
-		0.0f, 0.0f, 0.0f,
+	spotLights[0] = SpotLight(1.0f, 0.0f, 0.0f,
+		0.0f, 0.0f,
+		1.0f, 2.0f, 0.0f,
 		0.0f, -1.0f, 0.0f,
 		0.3f, 0.2f, 0.1f,
 		60.0f);
 	spotLightCount++;
-	spotLights[1] = SpotLight(1.0f, 1.0f, 1.0f,
-		1.0f, 1.0f,
-		0.0f, 0.5f, 0.0f,
-		-100.0f, -1.0f, 0.0f,
-		1.0f, 0.0f, 0.0f,
+	/*spotLights[1] = SpotLight(1.0f, 0.0f, 1.0f,
+		0.1f, 0.5f,
+		-1.0f, 2.0f, 0.0f,
+		0.0f, -1.0f, 0.0f,
+		0.3f, 0.2f, 0.1f,
 		60.0f);
-	spotLightCount++;
+	spotLightCount++;*/
 
 	GLuint uniformProjection = 0, uniformModel = 0, uniformView = 0, uniformEyePosition = 0,
 		uniformSpecularIntensity = 0, uniformShininess = 0;
@@ -149,14 +149,16 @@ int main()
 	createGrid(GRID_SQUARES);
 	
 	utils.CreateLetters(uniformModel, &objectList);
+	utils.CreateFinalStage(uniformModel, &objectList);
+	utils.CreateFinalAxes(uniformModel, &objectList);
 	
-	IndependentMesh sphere = IndependentMesh(&shaderList[0]);
+	/*IndependentMesh sphere = IndependentMesh(&shaderList[0]);
 	utils.createSphere(&sphere);
 	meshList.push_back(&sphere);
 	
 	IndependentMesh cylinder = IndependentMesh(&shaderList[0]);
 	utils.createCylinder(&cylinder, 20, 0.1, 1);
-	meshList.push_back(&cylinder);
+	meshList.push_back(&cylinder);*/
 	glEnable(GL_NORMALIZE);
 	float currentAngle = 0.0f;
 	// Loop until window closed
@@ -186,6 +188,8 @@ int main()
 		uniformSpecularIntensity = shaderList[0].GetSpecularIntensityLocation();
 		uniformShininess = shaderList[0].GetShininessLocation();
 
+		// spotLights[0].setFlash(camera.getCameraPosition(), camera.getCameraDirection());
+
 		shaderList[0].SetDirectionalLight(&mainLight);
 		shaderList[0].SetPointLight(pointLights, pointLightCount);
 		shaderList[0].SetSpotLight(spotLights, spotLightCount);
@@ -200,56 +204,63 @@ int main()
 
 		glm::mat4 model(1.0f);
 
-		model = glm::translate(model, glm::vec3(0.0f, 1.0f, -2.5f));
-		model = glm::scale(model, glm::vec3(0.4f, 0.4f, 1.0f));
-		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
-		brickTexture.UseTexture();
+		//model = glm::translate(model, glm::vec3(0.0f, 1.0f, -2.5f));
+		//model = glm::scale(model, glm::vec3(0.4f, 0.4f, 1.0f));
+		//glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		//brickTexture.UseTexture();
 		shinyMaterial.useMaterial(uniformSpecularIntensity, uniformShininess);
-		meshList[0]->RenderMesh();
+		//meshList[0]->RenderMesh();
 
-		model = glm::mat4(1.0f);
-		model = glm::translate(model, glm::vec3(0.0f, 0.0f, -2.5f));
-		model = glm::scale(model, glm::vec3(0.4f, 0.4f, 1.0f));
-		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		//model = glm::mat4(1.0f);
+		//model = glm::translate(model, glm::vec3(0.0f, 0.0f, -2.5f));
+		//model = glm::scale(model, glm::vec3(0.4f, 0.4f, 1.0f));
+		// glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
 
-		dirtTexture.UseTexture();
-		// dullMaterial.useMaterial(uniformSpecularIntensity, uniformShininess);
-		meshList[1]->RenderMesh();
+		//dirtTexture.UseTexture();
+		//// dullMaterial.useMaterial(uniformSpecularIntensity, uniformShininess);
+		//meshList[1]->RenderMesh();
 
 		// Grid
 		model = glm::mat4(1.0f);
-		model = glm::translate(model, glm::vec3(-2.5f, -0.5f, -2.5f));
+		model = glm::translate(model, glm::vec3(-2.5f, 0.0f, -2.5f));
 		model = glm::scale(model, glm::vec3(5.0f, 1.0f, 5.0f));
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
 
 		blackMarbleTexture.UseTexture();
-		meshList[2]->RenderCheckerBoardMesh(GRID_SQUARES, gridTextures);
+		meshList[0]->RenderCheckerBoardMesh(GRID_SQUARES, gridTextures);
 
 		dirtTexture.UseTexture();
 		// LETTERS
 		model = glm::mat4(1.0f);
-		model = glm::translate(model, glm::vec3(-0.4f, 0.0f, -.5f));
+		model = glm::translate(model, glm::vec3(0.0f, 0.0f, 0.0f));
 		model = glm::scale(model, glm::vec3(0.05f, 0.05f, 0.05f));
 
-		objectList[0]->SetModelMatrix(model, 4);
+		objectList[0]->SetModelMatrix(model, uniformModel);
 		objectList[0]->RenderObject();
-		//objectList[0]->RenderLetters(&blackMarbleTexture, &blackMarbleTexture, false);
 
-		model = glm::mat4(1.0f);
-		brickTexture.UseTexture();
-		model = glm::translate(model, glm::vec3(1.0f, 0.0f, -.5f));
-		model = glm::scale(model, glm::vec3(0.5f, 0.5f, 0.5f));
-		sphere.SetModelMatrix(model, uniformModel);
-		sphere.RenderMesh();
-		// test
+		blackMarbleTexture.UseTexture();
+		objectList[1]->SetModelMatrix(model, uniformModel);
+		objectList[1]->RenderObject();
+		
+		whiteMarbleTexture.UseTexture();
+		objectList[2]->SetModelMatrix(model, uniformModel);
+		objectList[2]->RenderObject();
 
-		model = glm::mat4(1.0f);
-		brickTexture.UseTexture();
-		model = glm::translate(model, glm::vec3(-1.0f, 0.0f, -.5f));
-		model = glm::scale(model, glm::vec3(0.5f, 0.5f, 0.5f));
-		model = glm::rotate(model, toRadians * 90, glm::vec3(1.0f, 0.0f, 0.0f));
-		cylinder.SetModelMatrix(model, uniformModel);
-		cylinder.RenderMesh();
+		//model = glm::mat4(1.0f);
+		//brickTexture.UseTexture();
+		//model = glm::translate(model, glm::vec3(1.0f, 0.0f, -.5f));
+		//model = glm::scale(model, glm::vec3(0.5f, 0.5f, 0.5f));
+		//sphere.SetModelMatrix(model, uniformModel);
+		//sphere.RenderMesh();
+		//// test
+
+		//model = glm::mat4(1.0f);
+		//brickTexture.UseTexture();
+		//model = glm::translate(model, glm::vec3(-1.0f, 0.0f, -.5f));
+		//model = glm::scale(model, glm::vec3(0.5f, 0.5f, 0.5f));
+		//model = glm::rotate(model, toRadians * 90, glm::vec3(1.0f, 0.0f, 0.0f));
+		//cylinder.SetModelMatrix(model, uniformModel);
+		//cylinder.RenderMesh();
 		
 		glUseProgram(0);
 

@@ -19,7 +19,8 @@ public:
 		unsigned int diffuseIntensityLocation, unsigned int positionLocation, unsigned int directionLocation,
 		unsigned int constantLocation, unsigned int linearLocation, unsigned int exponentLocation, unsigned int edgeLocation);
 
-    
+	void setFlash(glm::vec3 pos, glm::vec3 dir);
+
     ~SpotLight();
 
 private:

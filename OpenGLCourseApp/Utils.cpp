@@ -228,6 +228,103 @@ ComplexObject* Utils::CreateLetterU(GLuint uniformModel)
 	return uLetter;
 }
 
+ComplexObject* Utils::CreateStage(GLuint uniformModel)
+{
+	glm::mat4 model = glm::mat4(1.0f);
+
+	IndependentMesh* leftPillar = new IndependentMesh(shader);
+	createCylinder(leftPillar, 50, 1, 2);
+
+	model = glm::translate(model, glm::vec3(-16.5f, 2.0f, 0.0f));
+	model = glm::rotate(model, toRadians(90), glm::vec3(1.0f, 0.0f, 0.0f));
+	model = glm::scale(model, glm::vec3(0.8f, 0.8f, 10.0f));
+
+	leftPillar->SetModelMatrix(model, uniformModel);
+
+	model = glm::mat4(1.0f);
+	IndependentMesh* rightPillar = new IndependentMesh(shader);
+	createCylinder(rightPillar, 50, 1, 2);
+
+	model = glm::translate(model, glm::vec3(16.5f, 2.0f, 0.0f));
+	model = glm::rotate(model, toRadians(90), glm::vec3(1.0f, 0.0f, 0.0f));
+	model = glm::scale(model, glm::vec3(0.8f, 0.8f, 10.0f));
+
+	rightPillar->SetModelMatrix(model, uniformModel);
+
+
+	model = glm::mat4(1.0f);
+	IndependentMesh* base = new IndependentMesh(shader);
+	base->CreateMesh(vertices, indices, 192, 36);
+
+	model = glm::translate(model, glm::vec3(0.0f, -8.0f, 9.8f));
+	model = glm::rotate(model, toRadians(90), glm::vec3(1.0f, 0.0f, 0.0f));
+	model = glm::scale(model, glm::vec3(35.8f, 20.8f, 0.5f));
+
+	base->SetModelMatrix(model, uniformModel);
+
+
+	model = glm::mat4(1.0f);
+	IndependentMesh* screen = new IndependentMesh(shader);
+	screen->CreateMesh(vertices, indices, 192, 36);
+
+	model = glm::translate(model, glm::vec3(0.0f, 1.5f, 0.0f));
+	model = glm::scale(model, glm::vec3(33.8f, 18.8f, 0.5f));
+
+	screen->SetModelMatrix(model, uniformModel);
+
+
+
+	ComplexObject* stage = new ComplexObject();
+	stage->meshList.push_back(leftPillar);
+	stage->meshList.push_back(rightPillar);
+	stage->meshList.push_back(base);
+	stage->meshList.push_back(screen);
+
+	return stage;
+}
+
+ComplexObject* Utils::CreateAxes(GLuint uniformModel)
+{
+	glm::mat4 model = glm::mat4(1.0f);
+
+	IndependentMesh* xAxis = new IndependentMesh(shader);
+	createCylinder(xAxis, 50, 1, 2);
+
+	model = glm::translate(model, glm::vec3(0.0, 0.0f, 0.0f));
+	model = glm::rotate(model, toRadians(90), glm::vec3(1.0f, 0.0f, 0.0f));
+	model = glm::scale(model, glm::vec3(0.4f, 0.4f, 4.0f));
+
+	xAxis->SetModelMatrix(model, uniformModel);
+
+	model = glm::mat4(1.0f);
+	IndependentMesh* yAxis = new IndependentMesh(shader);
+	createCylinder(yAxis, 50, 1, 2);
+
+	model = glm::translate(model, glm::vec3(4.0f, -4.0f, 0.0f));
+	model = glm::rotate(model, toRadians(90), glm::vec3(0.0f, 1.0f, 0.0f));
+	model = glm::scale(model, glm::vec3(0.4f, 0.4f, 4.0f));
+
+	yAxis->SetModelMatrix(model, uniformModel);
+
+	model = glm::mat4(1.0f);
+	IndependentMesh* zAxis = new IndependentMesh(shader);
+	createCylinder(zAxis, 50, 1, 2);
+
+	model = glm::translate(model, glm::vec3(0.0f, -4.0f, 4.0f));
+	model = glm::scale(model, glm::vec3(0.4f, 0.4f, 4.0f));
+
+	zAxis->SetModelMatrix(model, uniformModel);
+
+
+	ComplexObject* axes = new ComplexObject();
+	axes->meshList.push_back(xAxis);
+	axes->meshList.push_back(yAxis);
+	axes->meshList.push_back(zAxis);
+
+	return axes;
+
+}
+
 void Utils::CreateLetters(unsigned int modelLocation, std::vector<ComplexObject*>* objectList) {	
 	//////////////////////////////////////////
 	// Creating Razvan's name object        //
@@ -241,31 +338,44 @@ void Utils::CreateLetters(unsigned int modelLocation, std::vector<ComplexObject*
 	ComplexObject* letterU = CreateLetterU(modelLocation);
 	ComplexObject* letterR2 = CreateLetterR(modelLocation);
 	
+	/*ComplexObject* stage = CreateStage(modelLocation);
+	ComplexObject* axes = CreateAxes(modelLocation);*/
 	
 	// P translate
 	model = glm::mat4(1.0f);
-	model = glm::translate(model, glm::vec3(0.0f, 0.0f, -2.0f));
+	model = glm::translate(model, glm::vec3(0.0f, 1.0f, -6.0f));
 	letterP->SetModelMatrix(model, modelLocation);
 	// I translate
 	model = glm::mat4(1.0f);
-	model = glm::translate(model, glm::vec3(1.5f, 7.5f, -2.0f));
+	model = glm::translate(model, glm::vec3(1.5f, 8.5f, -6.0f));
 	letterI->SetModelMatrix(model, modelLocation);
 	// R translate
 	model = glm::mat4(1.0f);
-	model = glm::translate(model, glm::vec3(0.0f, 15.0f, -2.0f));
+	model = glm::translate(model, glm::vec3(0.0f, 16.0f, -6.0f));
 	letterR->SetModelMatrix(model, modelLocation);
 	// V
 	model = glm::mat4(1.0f);
-	model = glm::translate(model, glm::vec3(0.0f, 22.5f, -2.0f));
+	model = glm::translate(model, glm::vec3(0.0f, 23.5f, -6.0f));
 	letterV->SetModelMatrix(model, modelLocation);
 	// U
 	model = glm::mat4(1.0f);
-	model = glm::translate(model, glm::vec3(0.0f, 27.0f, -2.0f));
+	model = glm::translate(model, glm::vec3(0.0f, 28.0f, -6.0f));
 	letterU->SetModelMatrix(model, modelLocation);
 	// R 2
 	model = glm::mat4(1.0f);
-	model = glm::translate(model, glm::vec3(0.0f, 34.5f, -2.0f));
+	model = glm::translate(model, glm::vec3(0.0f, 35.5f, -6.0f));
 	letterR2->SetModelMatrix(model, modelLocation);
+
+	// stage
+	/*model = glm::mat4(1.0f);
+	model = glm::translate(model, glm::vec3(0.0f, 8.5f, -30.0f));
+	stage->SetModelMatrix(model, modelLocation);*/
+
+	// axes
+	/*model = glm::mat4(1.0f);
+	model = glm::translate(model, glm::vec3(0.0f, 2.1f, 0.0f));
+	model = glm::scale(model, glm::vec3(0.5f, 0.5f, 0.5f));
+	axes->SetModelMatrix(model, modelLocation);*/
 
 	ComplexObject* razvanNameAndID = new ComplexObject();
 	razvanNameAndID->objectList.push_back(letterP);
@@ -274,9 +384,46 @@ void Utils::CreateLetters(unsigned int modelLocation, std::vector<ComplexObject*
 	razvanNameAndID->objectList.push_back(letterV);
 	razvanNameAndID->objectList.push_back(letterU);
 	razvanNameAndID->objectList.push_back(letterR2);
+	// razvanNameAndID->objectList.push_back(stage);
+	//razvanNameAndID->objectList.push_back(axes);
 
 	objectList->push_back(razvanNameAndID);
 }
+
+void Utils::CreateFinalStage(unsigned int modelLocation, std::vector<ComplexObject*>* objectList) 
+{
+	ComplexObject* stage = CreateStage(modelLocation);
+
+	glm::mat4 model = glm::mat4(1.0f);
+	// stage
+	model = glm::mat4(1.0f);
+	model = glm::translate(model, glm::vec3(0.0f, 8.5f, -30.0f));
+	stage->SetModelMatrix(model, modelLocation);
+
+	ComplexObject* finalStage = new ComplexObject();
+	finalStage->objectList.push_back(stage);
+
+	objectList->push_back(finalStage);
+
+}
+
+void Utils::CreateFinalAxes(unsigned int modelLocation, std::vector<ComplexObject*>* objectList) 
+{
+	ComplexObject* axes = CreateAxes(modelLocation);
+
+	glm::mat4 model = glm::mat4(1.0f);
+	// axes
+	model = glm::translate(model, glm::vec3(0.0f, 2.1f, 0.0f));
+	model = glm::scale(model, glm::vec3(0.5f, 0.5f, 0.5f));
+	axes->SetModelMatrix(model, modelLocation);
+
+	ComplexObject* finalAxes = new ComplexObject();
+	finalAxes->objectList.push_back(axes);
+
+	objectList->push_back(finalAxes);
+}
+
+
 
 void Utils::createSphere(IndependentMesh* mesh)
 {
@@ -388,7 +535,7 @@ void Utils::createCylinder(IndependentMesh* mesh, int sectorCount, float radius,
 		float h = -height / 2.0f + i * height;           // z value; -h/2 to h/2
 		float t = 1.0f - i;                              // vertical tex coord; 1 to 0
 
-		for (int j = 0, k = 0; j <= sectorCount; ++j, k += 3)
+		for (int j = 0, k = 0; j <= sectorCount ; ++j, k += 3)
 		{
 			float ux = unitVertices[k];
 			float uy = unitVertices[k + 1];
@@ -409,6 +556,7 @@ void Utils::createCylinder(IndependentMesh* mesh, int sectorCount, float radius,
 		}
 	}
 
+	
 	// the starting index for the base/top surface
 	//NOTE: it is used for generating indices later
 	int baseCenterIndex = (int)vertices.size() / 3;
