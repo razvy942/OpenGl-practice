@@ -76,9 +76,31 @@ vec4 calcDirectionalLight()
 	return calcLightByDirection(directionalLight.base, directionalLight.direction);
 }
 
+vec4 calcPointLight()
+{
+	vec4 totalColour = vec4(0, 0, 0, 0);
+
+	for(int i = 0; i < pointLightCount; i++)
+	{
+		vec3 direction = FragPos - pointLights[i].position;
+		float distance = length(direction);
+		direction = normalize(direction);
+
+		vec4 colour = calcLightByDirection(pointLights[i].base, direction);
+		// ax^2 + bx + c
+		float attenuation = pointLights[i].exponant * distance * distance + pointLights[i].linear * distance + pointLights[i].constant;
+		
+		totalColour += (colour / attenuation);
+	}
+
+	return totalColour;
+}
+
 void main()
 {
 
 	vec4 finalColour = calcDirectionalLight();
+	finalColour += calcPointLight();
+
 	colour = texture(theTexture, TexCoord) * finalColour;
 }
