@@ -33,6 +33,7 @@ std::vector<Mesh*> meshList;
 std::vector<IndependentMesh*> independentMeshes;
 std::vector<ComplexObject*> objectList;
 std::vector<Shader> shaderList;
+std::vector<Texture*> gridTextures;
 
 Camera camera;
 Camera camera2;
@@ -44,6 +45,7 @@ Texture brickTexture;
 Texture dirtTexture;
 Texture blackMarbleTexture;
 Texture whiteMarbleTexture;
+Texture whiteMarbleTexture2;
 
 Material shinyMaterial;
 Material dullMaterial;
@@ -94,6 +96,13 @@ int main()
 	dirtTexture.LoadTexture(GL_RGBA);
 	blackMarbleTexture = Texture("Textures/FLoor/Marble_Black.jpg");
 	blackMarbleTexture.LoadTexture(GL_RGB);
+	gridTextures.push_back(&blackMarbleTexture);
+	whiteMarbleTexture = Texture("Textures/Floor/Marble_SlabWhite.jpg");
+	whiteMarbleTexture.LoadTexture(GL_RGB);
+	gridTextures.push_back(&whiteMarbleTexture);
+	whiteMarbleTexture2 = Texture("Textures/Floor/Marble_SlabWhite2.jpg");
+	whiteMarbleTexture2.LoadTexture(GL_RGB);
+	gridTextures.push_back(&whiteMarbleTexture2);
 
 	shinyMaterial = Material(1.0f, 16.0f);
 	dullMaterial = Material(0.3f, 4.0f);
@@ -121,7 +130,7 @@ int main()
 
 	shaderList[0].UseShader();
 	uniformModel = shaderList[0].GetModelLocation();
-	createGrid(60);
+	createGrid(GRID_SQUARES);
 	
 	utils.CreateLetters(uniformModel, &objectList);
 	
@@ -198,9 +207,9 @@ int main()
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
 
 		blackMarbleTexture.UseTexture();
-		meshList[2]->RenderMesh();
+		meshList[2]->RenderCheckerBoardMesh(GRID_SQUARES, gridTextures);
 
-
+		dirtTexture.UseTexture();
 		// LETTERS
 		model = glm::mat4(1.0f);
 		model = glm::translate(model, glm::vec3(-0.4f, 0.0f, -.5f));

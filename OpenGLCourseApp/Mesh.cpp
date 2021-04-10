@@ -135,6 +135,32 @@ void Mesh::RenderMesh()
 	glBindVertexArray(0);
 }
 
+void Mesh::RenderCheckerBoardMesh(int nbSquares, std::vector<Texture*>& textures)
+{
+	glBindVertexArray(VAO);
+	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, IBO);
+
+	srand(1);
+
+	int currentOffset = 0;
+	for (int i = 0; i < indexCount / 6; i++)
+	{
+		/*if (i % nbSquares)
+		{
+			currentOffset ++;
+		}
+		textures[(currentOffset) % textures.size()]->UseTexture();*/
+
+		textures[rand() % textures.size()]->UseTexture();
+
+		glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, (void*)(6 * i * sizeof(unsigned int)));
+	}
+
+	glBindTexture(GL_TEXTURE_2D, 0);
+	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
+	glBindVertexArray(0);
+}
+
 void Mesh::RenderMesh(glm::mat4& matrix, GLuint uniformModelLocation)
 {
 	// We want to work with our created VAO.

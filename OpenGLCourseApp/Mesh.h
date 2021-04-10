@@ -4,6 +4,7 @@
 #include <GLM/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
+#include <vector>
 
 #include "Texture.h"
 #include "Shader.h"
@@ -19,6 +20,7 @@ public:
 	void CreateMeshWithTexParams(GLfloat* vertices, unsigned int* indices, unsigned int numOfVertices, unsigned int numOfIndices);
 	void CreateSphereMesh(GLfloat* vertices, unsigned int* indices, unsigned int numOfVertices, unsigned int numOfIndices);
 	void RenderMesh();
+	void RenderCheckerBoardMesh(int nbSquares, std::vector<Texture*>& textures);
 	/// <summary>
 	/// Draws the mesh on screen using a custom transformation
 	/// </summary>
